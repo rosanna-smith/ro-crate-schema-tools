@@ -17,7 +17,7 @@ program
   .arguments("<d>")
   .option("-c, --config [conf]", "configuration file")
   .option(
-    "-h,  --html", "Output HTML (default is markdown)"
+    "--html", "Output HTML (default is markdown)"
   )
   .option(
     "-t,  --ro-crate-terms", "Output vocabulary and context file for terms"

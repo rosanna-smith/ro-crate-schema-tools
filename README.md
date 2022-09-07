@@ -49,6 +49,24 @@ Note that there is a schema:Class Class, but we follow Schema.org practice and u
 
 ## Usage
 
+To see the usage:
+
+ -  type `>> node roc-schema.js  -h`
+
+ ```
+Usage: roc-schema [options] <d>
+
+Extracts a markdown or HTML page from an RO Crate containing Schema.org style Classes and Properties 
+
+Options:
+  -V, --version            output the version number
+  -c, --config [conf]      configuration file
+  --html                   Output HTML (default is markdown)
+  -t,  --ro-crate-terms    Output vocabulary and context file for terms
+  -u,  --url [url]         URL for the final result (so links can be made relative)
+  -o, --output-path [rep]  Directory into which to write output (default: null)
+  -h, --help               display help for command
+```
 
 
 
