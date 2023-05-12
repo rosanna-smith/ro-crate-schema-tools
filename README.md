@@ -1,13 +1,17 @@
 # ro-crate-schema-tools
 
 
-Tools for RO-Crate to be used for creating and distributing Schema.org style ontologies. 
+Tools for RO-Crate to be used for creating and distributing Schema.org style ontologies. (SOSSs)
 
-Given an RO-Crate containing `rdfs:Class`, `rdf:Property`, `schema:DefinedTerm` and `schema:DefinedTermSet` definitions, this code can generate:
+Given an RO-Crate containing `rdfs:Class`, `rdf:Property`, `schema:DefinedTerm` and `schema:DefinedTermSet` entities, this code can generate:
 
 -  HTML or Markdown landing pages to document an ontology - eg <http://purl.archive.org/textcommons/terms>
 
 -  A Context file for inclusion in a crate or other JSON-LD
+
+Given *example* RO-Crate Metadata Documents, it can generate, or add to a SOSS that documents the usage in those metatadata documents; what classes and properties occur? To what range of values does each property link?
+
+
 
 
 
@@ -46,7 +50,7 @@ For example, `schema:Dataset` has the followinng definition:
 Note that there is a `schema:Class` Class, but we follow Schema.org practice and use `rdfs:Class` and `rdf:Property` for describing classes and schemas.
 
 
-## Usage
+## To generate documentation for a SOSS Crate
 
 To see the usage:
 
@@ -55,7 +59,7 @@ To see the usage:
  ```
 Usage: roc-schema [options] <d>
 
-Extracts a markdown or HTML page from an RO Crate containing Schema.org style Classes and Properties 
+Extracts a markdown or HTML page from an RO Crate that containx Schema.org style Classes and Properties 
 
 Options:
   -V, --version            output the version number
@@ -66,3 +70,8 @@ Options:
   -o, --output-path [rep]  Directory into which to write output (default: null)
   -h, --help               display help for command
 ```
+
+
+
+## To generate or update a SOSS Crate documenting usage
+
