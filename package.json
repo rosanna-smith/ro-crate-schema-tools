@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "rocschema": "roc-schema.js"
+    "rocschema": "roc-schema.js",
+    "sos2profile": "./tools/soss2profile.js"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,8 @@
     "commander": "^9.4.0",
     "commonmark": "^0.30.0",
     "fs-extra": "^11.1.1",
-    "ro-crate": "^3.3.1"
+    "lodash": "^4.17.21",
+    "ro-crate": "^3.3.1",
+    "yargs": "^17.7.2"
   }
 }
