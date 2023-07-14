@@ -1,21 +1,11 @@
 # ro-crate-schema-tools
 
 
-Tools for RO-Crate to be used for creating and distributing Schema.org style ontologies. (SOSSs)
-
-Given an RO-Crate containing `rdfs:Class`, `rdf:Property`, `schema:DefinedTerm` and `schema:DefinedTermSet` entities, this code can generate:
-
--  HTML or Markdown landing pages to document an ontology - eg <http://purl.archive.org/textcommons/terms>
-
--  A Context file for inclusion in a crate or other JSON-LD
-
-Given *example* RO-Crate Metadata Documents, it can generate, or add to a SOSS that documents the usage in those metatadata documents; what classes and properties occur? To what range of values does each property link?
+This repository contains node-based tools for [RO-Crate]() to be used for creating and distributing Schema.org style ontologies. (SOSSs)
 
 
 
-
-
-## Background
+## Background: What's a Schema.org Style Schema?
 
 Schema.org is available in ... schema.org [JSON-LD format](https://schema.org/version/latest/schemaorg-current-https.jsonld). 
 
@@ -49,6 +39,16 @@ For example, `schema:Dataset` has the followinng definition:
 
 Note that there is a `schema:Class` Class, but we follow Schema.org practice and use `rdfs:Class` and `rdf:Property` for describing classes and schemas.
 
+## About the tools
+
+These tools:
+
+-  Create SOSS schemas from example RO-Crates
+-  Create (and soon to incrementally update) RO-Crate Editor profiles that can be used to drive editors such as Crate-O.
+-  Produce static markdown and html documentation for SOSSs, you can put this on the web and use it to provide resolution to human-readable definitions of your linked data terms
+-  
+
+
 
 ## To generate documentation for a SOSS Crate
 
@@ -73,5 +73,9 @@ Options:
 
 
 
-## To generate or update a SOSS Crate documenting usage
+## To generate or update a SOSS Crate from one or more examples
+
+
+
+
 

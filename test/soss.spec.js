@@ -125,8 +125,6 @@ describe("Simple tests", function () {
   });
 
   it("Can create a schema from the RO-Crate sample file", async function () {
-
-
     myCrate = new ROCrate(
 		fs.readJSONSync(
 		  "./test_data/sample-ro-crate-metadata.json"
@@ -140,13 +138,10 @@ describe("Simple tests", function () {
 
 	  await soss.load(myCrate);
 
-  
     assert.ok(soss.sossCrate.getEntity(soss.sossCrate.resolveTerm("Thing")));
-    
 
 	  //console.log(soss.sossCrate.toJSON())
-
-    
+ 
     fs.writeJSONSync("output/ro-crate-minimal/ro-crate-metadata.json", soss.sossCrate.toJSON(), {
       spaces: 2,
     });
