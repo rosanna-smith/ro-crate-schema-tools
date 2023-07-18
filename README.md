@@ -1,15 +1,15 @@
 # ro-crate-schema-tools
 
 
-This repository contains node-based tools for [RO-Crate]() to be used for creating and distributing Schema.org style ontologies. (SOSSs)
+This repository contains node-based tools for Research Object Crate [RO-Crate](https://www.researchobject.org/ro-crate/) to be used for creating and distributing Schema.org style ontologies. (SOSSs)
 
 
 
 ## Background: What's a Schema.org Style Schema?
 
-Schema.org is available in ... schema.org [JSON-LD format](https://schema.org/version/latest/schemaorg-current-https.jsonld). 
+Schema.org is available in schema.org [JSON-LD format](https://schema.org/version/latest/schemaorg-current-https.jsonld). 
 
-For example, `schema:Dataset` has the followinng definition:
+For example, `schema:Dataset` has the following definition:
 
 ```
    {
@@ -37,7 +37,7 @@ For example, `schema:Dataset` has the followinng definition:
    }
 ```
 
-Note that there is a `schema:Class` Class, but we follow Schema.org practice and use `rdfs:Class` and `rdf:Property` for describing classes and schemas.
+Note that while there is a `schema:Class` Class, but we follow Schema.org practice and use `rdfs:Class` and `rdf:Property` for describing classes and schemas.
 
 ## About the tools
 
@@ -74,6 +74,22 @@ Options:
 
 
 ## To generate or update a SOSS Crate from one or more examples
+
+The Makefile contains some examples.
+
+To make a generic RO-Crate Editor Profile:
+
+```make generic```
+
+To make a base profile that includes ALL of schema.org plus the RO-Crate add-ins:
+
+```make base```
+
+For usage
+
+```rocsoss --help```
+
+
 
 
 

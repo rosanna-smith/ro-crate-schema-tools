@@ -18,7 +18,7 @@ const argv = yargs(process.argv.slice(2))
   .option("o", {
     alias: "output-soss",
     describe:
-      "A fulle path to output a SoSS (Schema.org Style Schema) crate generated from the input files",
+      "A full path to output a SoSS (Schema.org Style Schema) crate generated from the input files",
     type: "string",
   })
   .option("p", {
@@ -40,10 +40,14 @@ const argv = yargs(process.argv.slice(2))
     alias: "name",
     describe: "Name of this profile",
     type: "string",
+  })  .option("d", {
+    alias: "description",
+    describe: "Description of this profile",
+    type: "string",
   })
   .option("b", {
     alias: "base-profile",
-    describe: "Make SOSS crate and/or profile of the basic Schema.org + RO-Crate terms",
+    describe: "Make a SOSS crate (-o) and/or profile (-p) of the basic Schema.org + RO-Crate terms",
     type: "boolean",
   })
   .help().argv;
@@ -61,11 +65,10 @@ function getInputs(entity, inputs) {
         multiple: true,
         type: []
       };
-      rangeIncludes = prop.rangeInclues || prop["schema:rangeIncludes"] || false;
-      if (rangeIncludes){
-        for (let i of rangeIncludes) {
-          if (!input.type.includes(t["rdfs:label"][0])) {
-            input.type.push(t["rdfs:label"][0]);
+      if (prop.rangeIncludes){
+        for (let i of prop.rangeIncludes) {
+          if (!input.type.includes(i["rdfs:label"][0])) {
+            input.type.push(i["rdfs:label"][0]);
           }
         }
       } else if (prop.definedTermSet) {
@@ -139,7 +142,7 @@ async function main() {
   const profile = {
     metadata: {
       name: argv.name || "TEST PROFILE",
-      description: argv.name || "...",
+      description: argv.description || argv.name,
       version: 0,
     },
     layouts: standardLayout,
