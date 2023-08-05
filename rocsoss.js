@@ -55,7 +55,6 @@ const argv = yargs(process.argv.slice(2))
 function getInputs(entity, inputs) {
   var newInputs = [];
   for (let prop of entity["@reverse"]?.["domainIncludes"] || entity["@reverse"]?.["schema:domainIncludes"] || []) {
-    
     if (prop["rdfs:label"]) {
       // If we already have this input then just keep it
       var input = inputs.find(x => x.id === prop["rdfs:label"][0]) || {
@@ -67,8 +66,11 @@ function getInputs(entity, inputs) {
       };
       if (prop.rangeIncludes){
         for (let i of prop.rangeIncludes) {
-          if (!input.type.includes(i["rdfs:label"][0])) {
-            input.type.push(i["rdfs:label"][0]);
+          var label = i["rdfs:label"]?.[0];
+          if (!label) {
+            console.log("No label for", i)
+          } else if (!input.type.includes(label)) {
+            input.type.push(label);
           }
         }
       } else if (prop.definedTermSet) {
@@ -95,48 +97,6 @@ function getInputs(entity, inputs) {
   return newInputs;
 }
 
-const standardLayout = {
-  Dataset: [
-    {
-      name: "Core metadata",
-      description: "Standard metadata fields for scholarly communications",
-      inputs: [
-        "description",
-        "conformsTo",
-        "author",
-        "publisher",
-        "datePublished",
-      ],
-    },
-    {
-      name: "Related items",
-      description: "",
-      inputs: ["funder", "citation"],
-    },
-    {
-      name: "Structure",
-      description: "How does this collection relate to other collections",
-      inputs: [
-        "hasMember",
-        "memberOf",
-        "hasPart",
-        "partOf",
-        "hasFile",
-        "fileOf",
-      ],
-    },
-    {
-      name: "Space and Time",
-      description: "",
-      inputs: [
-        "temporalCoverage",
-        "spatialCoverage",
-        "contentLocation",
-        "address",
-      ],
-    },
-  ],
-};
 
 async function main() {
   const profile = {
@@ -145,7 +105,6 @@ async function main() {
       description: argv.description || argv.name,
       version: 0,
     },
-    layouts: standardLayout,
     rootDatasets: {
       Schema: {
         type: "Dataset",
@@ -156,7 +115,6 @@ async function main() {
 
   //const r = new ROCrate({ array: true, link: true });
   var vocabCrate;
-  // If there are files to process then these are examples
   if (argv.baseProfile) {
     if (argv._.length > 0) {
        console.log("Warning -- ignoring input files", argv._)
@@ -170,7 +128,7 @@ async function main() {
     );
     await soss.setup();
     vocabCrate = soss.backgroundSchema;
-  } else if (argv._.length > 0) {
+  } else if (argv._.length > 0) {   // If there are files to process then these are examples
     const soss = new SOSS(
       null,
       "https://purl.archive.org/languague-data-commons/terms#",
@@ -190,11 +148,26 @@ async function main() {
     vocabCrate = soss.sossCrate;
 
    
-  } else if (argv.sossCrate) { // Load a specific soss
-    vocabCrate = new ROCrate(await fs.readJSON(argv.sossCrate), {
+  } else if (argv.sossCrate) { // Load a specific Schema (SOSS) 
+    inputCrate = new ROCrate(await fs.readJSON(argv.sossCrate), {
       array: true,
       link: true,
     });
+    console.log("THING - input", inputCrate.getEntity("http://schema.org/CreativeWork"))
+
+    const soss = new SOSS(
+      inputCrate,
+      "https://purl.archive.org/languague-data-commons/terms#",
+      {
+        superclass: true,
+      }
+    );
+    await soss.setup();
+
+    console.log("THING", soss.sossCrate.getEntity("http://schema.org/CreativeWork"))
+    vocabCrate = soss.sossCrate;
+
+
   }
 
    // User would like to save this SOSS

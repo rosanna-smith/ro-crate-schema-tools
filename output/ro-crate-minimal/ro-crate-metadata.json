@@ -225,13 +225,13 @@
     {
       "@id": "http://schema.org/CreativeWork",
       "@type": "rdfs:Class",
+      "source": {
+        "@id": "http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_rNews"
+      },
       "rdfs:comment": "The most generic kind of creative work, including books, movies, photographs, software programs, etc.",
       "rdfs:label": "CreativeWork",
       "rdfs:subClassOf": {
         "@id": "http://schema.org/Thing"
-      },
-      "schema:source": {
-        "@id": "http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_rNews"
       },
       "name": "CreativeWork"
     },
@@ -258,25 +258,25 @@
     {
       "@id": "http://schema.org/Dataset",
       "@type": "rdfs:Class",
-      "owl:equivalentClass": [
-        {
-          "@id": "dcmitype:Dataset"
-        },
-        {
-          "@id": "dcat:Dataset"
-        },
-        {
-          "@id": "void:Dataset"
-        }
-      ],
+      "source": {
+        "@id": "http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_DatasetClass"
+      },
       "rdfs:comment": "A body of structured information describing some topic(s) of interest.",
       "rdfs:label": "Dataset",
       "rdfs:subClassOf": {
         "@id": "http://schema.org/CreativeWork"
       },
-      "schema:source": {
-        "@id": "http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_DatasetClass"
-      }
+      "http://www.w3.org/2002/07/owl#equivalentClass": [
+        {
+          "@id": "http://purl.org/dc/dcmitype/Dataset"
+        },
+        {
+          "@id": "http://www.w3.org/ns/dcat#Dataset"
+        },
+        {
+          "@id": "http://rdfs.org/ns/void#Dataset"
+        }
+      ]
     },
     {
       "@id": "http://schema.org/citation",
@@ -405,16 +405,16 @@
     {
       "@id": "http://schema.org/Person",
       "@type": "rdfs:Class",
-      "owl:equivalentClass": {
-        "@id": "foaf:Person"
+      "source": {
+        "@id": "http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_rNews"
       },
       "rdfs:comment": "A person (alive, dead, undead, or fictional).",
       "rdfs:label": "Person",
       "rdfs:subClassOf": {
         "@id": "http://schema.org/Thing"
       },
-      "schema:source": {
-        "@id": "http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_rNews"
+      "http://www.w3.org/2002/07/owl#equivalentClass": {
+        "@id": "foaf:Person"
       }
     },
     {
@@ -648,26 +648,26 @@
     {
       "@id": "http://schema.org/IndividualProduct",
       "@type": "rdfs:Class",
+      "source": {
+        "@id": "http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsClass"
+      },
       "rdfs:comment": "A single, identifiable product instance (e.g. a laptop with a particular serial number).",
       "rdfs:label": "IndividualProduct",
       "rdfs:subClassOf": {
         "@id": "http://schema.org/Product"
-      },
-      "schema:source": {
-        "@id": "http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsClass"
       },
       "name": "IndividualProduct"
     },
     {
       "@id": "http://schema.org/Product",
       "@type": "rdfs:Class",
+      "source": {
+        "@id": "http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsTerms"
+      },
       "rdfs:comment": "Any offered product or service. For example: a pair of shoes; a concert ticket; the rental of a car; a haircut; or an episode of a TV show streamed online.",
       "rdfs:label": "Product",
       "rdfs:subClassOf": {
         "@id": "http://schema.org/Thing"
-      },
-      "schema:source": {
-        "@id": "http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsTerms"
       },
       "name": "Product"
     },
@@ -730,13 +730,13 @@
     {
       "@id": "http://schema.org/Action",
       "@type": "rdfs:Class",
+      "source": {
+        "@id": "http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_ActionCollabClass"
+      },
       "rdfs:comment": "An action performed by a direct agent and indirect participants upon a direct object. Optionally happens at a location with the help of an inanimate instrument. The execution of the action may produce a result. Specific action sub-type documentation specifies the exact expectation of each argument/role.\\n\\nSee also [blog post](http://blog.schema.org/2014/04/announcing-schemaorg-actions.html) and [Actions overview document](http://schema.org/docs/actions.html).",
       "rdfs:label": "Action",
       "rdfs:subClassOf": {
         "@id": "http://schema.org/Thing"
-      },
-      "schema:source": {
-        "@id": "http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_ActionCollabClass"
       },
       "name": "Action"
     },
@@ -803,13 +803,13 @@
     {
       "@id": "http://schema.org/ImageObject",
       "@type": "rdfs:Class",
-      "owl:equivalentClass": {
-        "@id": "dcmitype:Image"
-      },
       "rdfs:comment": "An image file.",
       "rdfs:label": "ImageObject",
       "rdfs:subClassOf": {
         "@id": "http://schema.org/MediaObject"
+      },
+      "http://www.w3.org/2002/07/owl#equivalentClass": {
+        "@id": "http://purl.org/dc/dcmitype/Image"
       }
     },
     {
@@ -949,13 +949,13 @@
     {
       "@id": "http://schema.org/PropertyValue",
       "@type": "rdfs:Class",
+      "source": {
+        "@id": "http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsClass"
+      },
       "rdfs:comment": "A property-value pair, e.g. representing a feature of a product or place. Use the 'name' property for the name of the property. If there is an additional human-readable version of the value, put that into the 'description' property.\\n\\n Always use specific schema.org properties when a) they exist and b) you can populate them. Using PropertyValue as a substitute will typically not trigger the same effect as using the original, specific property.\n    ",
       "rdfs:label": "PropertyValue",
       "rdfs:subClassOf": {
         "@id": "http://schema.org/StructuredValue"
-      },
-      "schema:source": {
-        "@id": "http://www.w3.org/wiki/WebSchemas/SchemaDotOrgSources#source_GoodRelationsClass"
       }
     },
     {

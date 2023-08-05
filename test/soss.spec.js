@@ -25,7 +25,10 @@ describe("Simple tests", function () {
     const soss = new SOSS();
     await soss.setup();
 
-    fs.writeFileSync("output/base-soss/ro-crate-metadata.json", JSON.stringify(soss.backgroundSchema.toJSON(), null, 2))
+    fs.writeFileSync(
+      "output/base-soss/ro-crate-metadata.json",
+      JSON.stringify(soss.backgroundSchema.toJSON(), null, 2)
+    );
     assert.ok(
       soss.backgroundSchema.getEntity(
         soss.backgroundSchema.resolveTerm("RepositoryObject")
@@ -48,6 +51,17 @@ describe("Simple tests", function () {
     );
   });
 
+  it("Can fill in the gaps in a schema", async function () {
+    const soss = new SOSS();
+    await soss.setup();
+    assert.ok(soss.backgroundSchema.getEntity(soss.sossCrate.resolveTerm("Person")));
+
+    assert.ok(
+      !soss.sossCrate.getEntity(soss.sossCrate.resolveTerm("SomeWeirdType"))
+    );
+    //console.log(soss.sossCrate.toJSON());
+  });
+
   it("Test Inferring a Schema", async function () {
     const soss = new SOSS();
     await soss.setup();
@@ -57,7 +71,6 @@ describe("Simple tests", function () {
       "@id": "#item1",
     };
     await soss.load(myCrate);
-    console.log(soss.sossCrate.resolveTerm("SomeWeirdType"));
 
     assert.ok(
       soss.sossCrate.getEntity(soss.sossCrate.resolveTerm("SomeWeirdType"))
@@ -67,29 +80,33 @@ describe("Simple tests", function () {
 
   it("Can backfill Schema.org stuff into the Language Data Commons Schema", async function () {
     myCrate = new ROCrate(
-		fs.readJSONSync(
-		  "test_data/ldac-soss/ro-crate-metadata.json"
-		),
-		{ array: true, link: true }
-	  );
+      fs.readJSONSync("test_data/ldac-soss/ro-crate-metadata.json"),
+      { array: true, link: true }
+    );
     const soss = new SOSS(myCrate, "https://purl.archive.org/terms#", {
       superclass: true,
     });
     await soss.setup();
 
-	await soss.load(myCrate);
+    await soss.load(myCrate);
 
-  
-  assert.ok(soss.sossCrate.getEntity(soss.sossCrate.resolveTerm("Thing")));
-	console.log()
+    assert.ok(soss.sossCrate.getEntity(soss.sossCrate.resolveTerm("Thing")));
+    assert.ok(
+      soss.sossCrate.getEntity(soss.sossCrate.resolveTerm("Thing"))["@id"]
+    )
+    assert.ok(
+      soss.sossCrate.getEntity(soss.sossCrate.resolveTerm("CreativeWork"))["@id"]
+  )
+  assert.ok (
+   soss.sossCrate.getEntity(soss.sossCrate.resolveTerm("Person"))["@id"]
+  )
     for (let e of soss.sossCrate.entities()) {
       if (e["@type"].includes("URL")) {
         soss.sossCrate.deleteEntity(e);
       }
     }
 
-	console.log(soss.sossCrate.getEntity("http://schema.org/CreativeWork"))
-
+    console.log(soss.sossCrate.getEntity("http://schema.org/CreativeWork"));
 
     fs.writeJSONSync("ro-crate-metadata.json", soss.sossCrate.toJSON(), {
       spaces: 2,
@@ -97,28 +114,25 @@ describe("Simple tests", function () {
   });
 
   it("Can make a Schema for the notebook example", async function () {
-
-
     myCrate = new ROCrate(
-		fs.readJSONSync(
-		  "./test_data/notebook/ro-crate-metadata.json"
-		),
-		{ array: true, link: true }
-	  );
-    const soss = new SOSS(myCrate, "https://purl.archive.org/languague-data-commons/terms#", {
-      superclass: true,
-    });
+      fs.readJSONSync("./test_data/notebook/ro-crate-metadata.json"),
+      { array: true, link: true }
+    );
+    const soss = new SOSS(
+      myCrate,
+      "https://purl.archive.org/languague-data-commons/terms#",
+      {
+        superclass: true,
+      }
+    );
     await soss.setup();
 
-	   await soss.load(myCrate);
+    await soss.load(myCrate);
 
-  
     assert.ok(soss.sossCrate.getEntity(soss.sossCrate.resolveTerm("Thing")));
-    
 
-	//console.log(soss.sossCrate.toJSON())
+    //console.log(soss.sossCrate.toJSON())
 
-    
     fs.writeJSONSync("ro-crate-metadata.json", soss.sossCrate.toJSON(), {
       spaces: 2,
     });
@@ -126,24 +140,30 @@ describe("Simple tests", function () {
 
   it("Can create a schema from the RO-Crate sample file", async function () {
     myCrate = new ROCrate(
-		fs.readJSONSync(
-		  "./test_data/sample-ro-crate-metadata.json"
-		),
-		{ array: true, link: true }
-	  );
-    const soss = new SOSS(null, "https://purl.archive.org/languague-data-commons/terms#", {
-      superclass: true,
-    });
+      fs.readJSONSync("./test_data/sample-ro-crate-metadata.json"),
+      { array: true, link: true }
+    );
+    const soss = new SOSS(
+      null,
+      "https://purl.archive.org/languague-data-commons/terms#",
+      {
+        superclass: true,
+      }
+    );
     await soss.setup();
 
-	  await soss.load(myCrate);
+    await soss.load(myCrate);
 
     assert.ok(soss.sossCrate.getEntity(soss.sossCrate.resolveTerm("Thing")));
 
-	  //console.log(soss.sossCrate.toJSON())
- 
-    fs.writeJSONSync("output/ro-crate-minimal/ro-crate-metadata.json", soss.sossCrate.toJSON(), {
-      spaces: 2,
-    });
+    //console.log(soss.sossCrate.toJSON())
+
+    fs.writeJSONSync(
+      "output/ro-crate-minimal/ro-crate-metadata.json",
+      soss.sossCrate.toJSON(),
+      {
+        spaces: 2,
+      }
+    );
   });
 });
