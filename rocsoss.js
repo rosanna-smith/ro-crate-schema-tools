@@ -94,7 +94,7 @@ function getInputs(entity, inputs) {
    newInputs.push(getInputs(c, newInputs));
   }
 
-  return newInputs;
+  return newInputs.flat();
 }
 
 
@@ -153,7 +153,6 @@ async function main() {
       array: true,
       link: true,
     });
-    console.log("THING - input", inputCrate.getEntity("http://schema.org/CreativeWork"))
 
     const soss = new SOSS(
       inputCrate,
@@ -164,7 +163,6 @@ async function main() {
     );
     await soss.setup();
 
-    console.log("THING", soss.sossCrate.getEntity("http://schema.org/CreativeWork"))
     vocabCrate = soss.sossCrate;
 
 
@@ -195,6 +193,9 @@ async function main() {
         }
       }
       await fs.writeJson(argv.outputProfile, profile, { spaces: 2 });
+      var output = JSON.stringify(profile, null, 2).replace(/"MediaObject"/g, `"File"`) // Yes, this is hacky but it's cleaner than doing this all over the place 
+
+      await fs.writeFile(argv.outputProfile, output);
       //console.log(JSON.stringify(profile, null, 2))
   }
 
