@@ -57,16 +57,17 @@ function getInputs(entity, inputs) {
   for (let prop of entity["@reverse"]?.["domainIncludes"] || entity["@reverse"]?.["schema:domainIncludes"] || []) {
     if (prop["rdfs:label"]) {
       // If we already have this input then just keep it
-      var input = inputs.find(x => x.id === prop["rdfs:label"][0]) || {
+      const propName = prop["rdfs:label"][0]?.["@value"] || prop["rdfs:label"][0];
+      var input = inputs.find(x => x.id ===  propName) || {
         id: prop["@id"],
-        name: prop["rdfs:label"][0],
-        help: prop?.description,
+        name: propName,
+        help: prop?.["rdfs:comment"]?.[0],
         multiple: true,
         type: []
       };
       if (prop.rangeIncludes){
         for (let i of prop.rangeIncludes) {
-          var label = i["rdfs:label"]?.[0];
+          const label = i["rdfs:label"]?.[0]?.["@value"] || i["rdfs:label"]?.[0] ;
           if (!label) {
             console.log("No label for", i)
           } else if (!input.type.includes(label)) {
@@ -95,6 +96,24 @@ function getInputs(entity, inputs) {
   }
 
   return newInputs.flat();
+}
+
+function getSubClasses(entity, alreadyGot) {
+  if (!alreadyGot) {
+    alreadyGot = [];
+  }
+  for (let sub of entity?.["@reverse"]?.["rdfs:subClassOf"] ||[]) {
+      var className = sub["rdfs:label"][0]?.["@value"]  || sub["rdfs:label"][0]
+      // Hack: some things are coming out as arrays --- this is weird TODO get to the bottom of
+      if (Array.isArray(className)) {
+        className = className[0]
+      }
+      if (!alreadyGot.includes(className)) {
+        alreadyGot.push(className);
+        getSubClasses(sub, alreadyGot)
+      }
+  }
+  return alreadyGot;
 }
 
 
@@ -178,18 +197,18 @@ async function main() {
   if (argv.outputProfile) {
     for (let entity of vocabCrate["@graph"]) {
       if (entity["@type"].includes("rdfs:Class")) {
-        if (!profile.classes[entity["rdfs:label"]]) {
-          profile.classes[entity["rdfs:label"]] = {
-            definition: "override",
-            subClassOf: entity.subClassOf,
+        const className = entity["rdfs:label"][0]?.["@value"] || entity["rdfs:label"][0]
+        if (!profile.classes[className]) {
+          profile.classes[className] = {
+            hasSubclass: getSubClasses(entity),
             inputs: []
           }
           } else {  
             inputs = entity["@type"].includes("rdfs:Class").inputs
           }
-          var inputs = profile.classes[entity["rdfs:label"]].inputs;
+          var inputs = profile.classes[className].inputs;
           newInputs = getInputs(entity, inputs);
-          profile.classes[entity["rdfs:label"]].inputs = newInputs.flat();
+          profile.classes[className].inputs = newInputs.flat();
         }
       }
       await fs.writeJson(argv.outputProfile, profile, { spaces: 2 });
