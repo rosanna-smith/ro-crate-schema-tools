@@ -5,5 +5,5 @@ base:
 
 idn:
 	rocsoss test_data/idn/catalog/ro-crate-metadata.json -p test_data/idn/catalog/idn-catalog-profile.json -d "Work in progress collection profile for the Indigenous Data Network (IDN)" -n "Test ONLY: IDN collection profile"
-	rocsoss test_data/idn/catalog/ro-crate-metadata.json -p test_data/idn/record/idn-record-profile.json -d "Work in progress collection profile for the Indigenous Data Network (IDN)" -n "Test ONLY: IDN collection profile"
+	rocsoss test_data/idn/catalog/ro-crate-metadata.json -p test_data/idn/record	/idn-record-profile.json -d "Work in progress collection profile for the Indigenous Data Network (IDN)" -n "Test ONLY: IDN collection profile"
 
