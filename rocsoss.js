@@ -4,6 +4,7 @@ const yargs = require("yargs");
 const fs = require("fs-extra");
 const { ROCrate } = require("ro-crate");
 const { SOSS } = require("./lib/soss");
+const { ProfileGenerator } = require("./lib/profilegen");
 
 const argv = yargs(process.argv.slice(2))
   .scriptName("soss2profile")
@@ -53,90 +54,10 @@ const argv = yargs(process.argv.slice(2))
   })
   .help().argv;
 
-function getInputs(vocabCrate, entity, inputs) {
-  var newInputs = [];
-  for (let prop of entity["@reverse"]?.["domainIncludes"] ||
-    entity["@reverse"]?.["schema:domainIncludes"] ||
-    []) {
-    if (prop["rdfs:label"]) {
-      // If we already have this input then just keep it
-      var propName =
-        prop["rdfs:label"][0]?.["@value"]?.[0] || prop["rdfs:label"][0];
 
-      var input = inputs.find((x) => x.id === propName) || {
-        id: prop["@id"],
-        name: propName,
-        help:
-          prop["rdfs:comment"][0]?.["@value"]?.[0] ||
-          prop?.["rdfs:comment"]?.[0],
-        multiple: true,
-        type: [],
-      };
-      if (argv.baseProfile || argv.text) {
-        input.type.push("Text");
-      }
-      if (prop.rangeIncludes) {
-        for (let i of prop.rangeIncludes) {
-          const label =
-            i["rdfs:label"]?.[0]?.["@value"]?.[0] || i["rdfs:label"]?.[0];
-          if (!label) {
-            console.log("No label for", i);
-          } else if (!input.type.includes(label)) {
-            input.type.push(label);
-          }
-        }
-      } else if (prop.definedTermSet) {
-        // TODO -- this will overwrite
-        input.type = ["Select"];
-        input.values = prop.definedTermSet
-          .map((dts) => {
-            return dts.hasDefinedTerm?.map((dt) => {
-              return dt;
-            });
-          })
-          .flat();
-      }
-      if (input.type.length === 0) input.type = ["Text"];
-
-      newInputs.push(input);
-    }
-  }
-  for (let c of entity?.["rdfs:subClassOf"] || []) {
-    newInputs.push(getInputs(vocabCrate, c, newInputs));
-  }
-
-  return newInputs.flat();
-}
-
-function getSubClasses(entity, alreadyGot) {
-  if (!alreadyGot) {
-    alreadyGot = [];
-  }
-  for (let sub of entity?.["@reverse"]?.["rdfs:subClassOf"] || []) {
-    var className = sub["rdfs:label"][0]?.["@value"] || sub["rdfs:label"][0];
-    // Hack: some things are coming out as arrays --- this is weird TODO get to the bottom of
-    if (Array.isArray(className)) {
-      className = className[0];
-    }
-    if (!alreadyGot.includes(className)) {
-      alreadyGot.push(className);
-      getSubClasses(sub, alreadyGot);
-    }
-  }
-  return alreadyGot;
-}
 
 async function main() {
-  const profile = {
-    metadata: {
-      name: argv.name || "TEST PROFILE",
-      description: argv.description || argv.name,
-      version: 0,
-    },
-    conformsToUri: [],
-    rootDataset: {"type" : ["Dataset"]},
-    classes: {},
-  };
+
 
   //const r = new ROCrate({ array: true, link: true });
   var vocabCrate;
@@ -149,7 +70,7 @@ async function main() {
     }
     const soss = new SOSS(
       null,
-      "https://purl.archive.org/languague-data-commons/terms#",
+      "https://purl.archive.org/language-data-commons/terms#",
       {
         superclass: true,
       }
@@ -160,7 +81,7 @@ async function main() {
     // If there are files to process then these are examples
     const soss = new SOSS(
       null,
-      "https://purl.archive.org/languague-data-commons/terms#",
+      "https://purl.archive.org/language-data-commons/terms#",
       {
         superclass: true,
       }
@@ -168,7 +89,7 @@ async function main() {
     await soss.setup();
     for (let cratePath of argv._) {
       // Make a SOSS -- load stuff
-      exampleCrate = new ROCrate(fs.readJSONSync(cratePath), {
+      const exampleCrate = new ROCrate(fs.readJSONSync(cratePath), {
         array: true,
         link: true,
       });
@@ -186,6 +107,7 @@ async function main() {
       }
     }
     vocabCrate = soss.sossCrate;
+
   } else if (argv.sossCrate) {
     // Load a specific Schema (SOSS)
     inputCrate = new ROCrate(await fs.readJSON(argv.sossCrate), {
@@ -195,7 +117,7 @@ async function main() {
 
     const soss = new SOSS(
       inputCrate,
-      "https://purl.archive.org/languague-data-commons/terms#",
+      "https://purl.archive.org/language-data-commons/terms#",
       {
         superclass: true,
       }
@@ -212,38 +134,11 @@ async function main() {
 
   // If we have an output path make a profile
   if (argv.outputProfile) {
-    for (let c of conformsToURIs) {
-      if (!profile.conformsToUri.includes(c)) {
-        profile.conformsToUri.push(c)
-      }
-    }
-    for (let t of rootTypes) {
-      if (!profile.rootDataset.type.includes(t)) {
-        profile.rootDataset.type.push(t)
-      }
-    }
-    for (let entity of vocabCrate["@graph"]) {
-      if (entity["@type"].includes("rdfs:Class")) {
-        const className =
-          entity["rdfs:label"][0]?.["@value"]?.[0] || entity["rdfs:label"][0];
-
-        if (!profile.classes[className]) {
-          profile.classes[className] = {
-            hasSubclass: getSubClasses(entity),
-            inputs: [],
-          };
-        } else {
-          inputs = entity["@type"].includes("rdfs:Class").inputs;
-        }
-        var inputs = profile.classes[className].inputs;
-        newInputs = getInputs(vocabCrate, entity, inputs);
-        profile.classes[className].inputs = newInputs.flat();
-      }
-    }
+   profileGenerator = new ProfileGenerator(vocabCrate, conformsToURIs, rootTypes, {defaultText: (argv.rootDataset || argv.text), name: argv.name, description: argv.description})
    
 
    // await fs.writeJson(argv.outputProfile, profile, { spaces: 2 });
-    var output = JSON.stringify(profile, null, 2).replace(
+    var output = JSON.stringify(profileGenerator.profile, null, 2).replace(
       /"MediaObject"/g,
       `"File"`
     ); // Yes, this is hacky but it's cleaner than doing this all over the place
