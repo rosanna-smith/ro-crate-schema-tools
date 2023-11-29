@@ -8,4 +8,7 @@ idn:
 	rocs ss test_data/idn/catalog/ro-crate-metadata.json -p test_data/idn/record/idn-record-profile.json -d "Work in progress collection profile for the Indigenous Data Network (IDN)" -n "Test ONLY: IDN collection profile"
 
 cooee:
-	node rocsoss.js test_data/ldac_examples/cooee-new/ro-crate-metadata.json -p "test-ldac-cooee-mode.json" -n "testldac cooee" -d "testing a mode file made with cooee" -s schemas/ldac/ro-crate-metadata.json 
+	node rocsoss.js test_data/ldac_examples/cooee/ro-crate-metadata.json -p "test-ldac-cooee-mode.json" -n "testldac cooee" -d "testing a mode file made with cooee" -s test_data/ldac-soss/ro-crate-metadata.json -o test-ldac-soss.json
+
+ldac:
+	node rocsoss.js  -p "test-ldac-cooee-mode.json" -n "testldac cooee" -d "testing a mode file made with cooee" -s test_data/ldac-soss/ro-crate-metadata.json  -o test-ldac-soss.json

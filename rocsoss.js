@@ -63,20 +63,21 @@ async function main() {
   var vocabCrate;
   const conformsToURIs = [];
   const rootTypes = [];
+  var soss;
 
   if (argv.baseProfile) {
     if (argv._.length > 0) {
       console.log("Warning -- ignoring input files", argv._);
     }
   }
-    if (argv.sossCrate) {
+  if (argv.sossCrate) {
       // Load a specific Schema (SOSS)
       inputCrate = new ROCrate(await fs.readJSON(argv.sossCrate), {
         array: true,
         link: true,
       });
   
-      const soss = new SOSS(
+      soss = new SOSS(
         inputCrate,
         "https://purl.archive.org/language-data-commons/terms#",
         {
@@ -87,7 +88,7 @@ async function main() {
   
       vocabCrate = soss.sossCrate;
     } else {
-    const soss = new SOSS(
+      soss = new SOSS(
       null,
       "https://purl.archive.org/language-data-commons/terms#",
       {
@@ -99,14 +100,7 @@ async function main() {
    }
    if (argv._.length > 0) {
     // If there are files to process then these are examples
-    const soss = new SOSS(
-      null,
-      "https://purl.archive.org/language-data-commons/terms#",
-      {
-        superclass: true,
-      }
-    );
-    await soss.setup();
+   
     for (let cratePath of argv._) {
       // Make a SOSS -- load stuff
       const exampleCrate = new ROCrate(fs.readJSONSync(cratePath), {
@@ -131,7 +125,7 @@ async function main() {
   } 
 
   // User would like to save this SOSS
-  if (argv.outputSoss && !argv.sossCrate) {
+  if (argv.outputSoss) {
     await fs.writeJson(argv.outputSoss, vocabCrate.toJSON(), { spaces: 2 });
   }
 
