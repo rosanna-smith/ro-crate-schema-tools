@@ -4,7 +4,7 @@
   "description": "Tools for RO-Crate to be used for creating and distributing Schema.org style ontologies. ",
   "main": "roc-schema.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx mocha"
   },
   "bin": {
     "rocschema": "roc-schema.js",
@@ -28,7 +28,10 @@
     "jsonld": "^8.2.0",
     "link": "^1.5.1",
     "lodash": "^4.17.21",
-    "ro-crate": "^3.3.1",
+    "ro-crate": "^3.3.4",
     "yargs": "^17.7.2"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0"
   }
 }

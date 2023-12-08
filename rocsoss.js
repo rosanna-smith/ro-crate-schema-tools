@@ -4,12 +4,12 @@ const yargs = require("yargs");
 const fs = require("fs-extra");
 const { ROCrate } = require("ro-crate");
 const { SOSS } = require("./lib/soss");
-const { ProfileGenerator } = require("./lib/profilegen");
+const { ModeGenerator } = require("./lib/modegen");
 
 const argv = yargs(process.argv.slice(2))
   .scriptName("soss2profile")
   .usage(
-    "Usage: $0  -c RO-Crate containing a Schema.org Style Schema (SoSS) -p profiles/your-profile.json example-crates"
+    "Usage: $0  -c RO-Crate containing a Schema.org Style Schema (SoSS) -p profiles/your-mode.json example-crates"
   )
   .option("s", {
     alias: "soss-crate",
@@ -23,33 +23,33 @@ const argv = yargs(process.argv.slice(2))
     type: "string",
   })
   .option("p", {
-    alias: "output-profile",
-    describe: "A path to the output file for a generated profile",
+    alias: "output-mode",
+    describe: "A path to the output file for a generated mode",
     type: "string",
   })
   .option("e", {
-    alias: "existing-profile",
-    describe: "A path to an existing profile on which to build",
+    alias: "existing-mode",
+    describe: "A path to an existing mode on which to build",
     type: "string",
   })
   .option("i", {
-    alias: "inputProfile",
-    describe: "A path to an existing profile ${filename}.json",
+    alias: "inputMode",
+    describe: "A path to an existing mode ${filename}.json",
     type: "string",
   })
   .option("n", {
     alias: "name",
-    describe: "Name of this profile",
+    describe: "Name of this mode",
     type: "string",
   }).option("d", {
     alias: "description",
-    describe: "Description of this profile",
+    describe: "Description of this mode",
     type: "string",
   })
   .option("t", {
     alias: "text",
     describe:
-      "Add 'Text' as an possible value type for all properties (inputs in profile terms)",
+      "Add 'Text' as an possible value type for all properties (inputs in mode terms)",
     type: "boolean",
   })
   .help().argv;
@@ -61,15 +61,17 @@ async function main() {
 
   //const r = new ROCrate({ array: true, link: true });
   var vocabCrate;
-  const conformsToURIs = [];
-  const rootTypes = [];
   var soss;
+  var existingMode;
 
-  if (argv.baseProfile) {
+  if (argv.baseMode) {
     if (argv._.length > 0) {
       console.log("Warning -- ignoring input files", argv._);
     }
   }
+    if (argv.existingMode) {
+        existingMode = fs.readJSONSync(argv.existingMode);
+    }
   if (argv.sossCrate) {
       // Load a specific Schema (SOSS)
       inputCrate = new ROCrate(await fs.readJSON(argv.sossCrate), {
@@ -109,16 +111,17 @@ async function main() {
       });
 
       await soss.load(exampleCrate);
-      for (let c of exampleCrate.rootDataset?.conformsTo || []) {
-        if (c["@id"] && !conformsToURIs.includes(c["@id"])) {
-          conformsToURIs.push(c["@id"])
-        }
-      }
-      for (let t of exampleCrate.rootDataset["@type"] || []) {
-        if (!rootTypes.includes(t)) {
-          rootTypes.push(t)
-        }
-      }
+      // Note: we dont have rootTypes or conformsToURIs, moved to rootDataEntity
+      // for (let c of exampleCrate.rootDataset?.conformsTo || []) {
+      //   if (c["@id"] && !conformsToURIs.includes(c["@id"])) {
+      //     conformsToURIs.push(c["@id"])
+      //   }
+      // }
+      // for (let t of exampleCrate.rootDataset["@type"] || []) {
+      //   if (!rootTypes.includes(t)) {
+      //     rootTypes.push(t)
+      //   }
+      // }
     }
     vocabCrate = soss.sossCrate;
 
@@ -129,19 +132,24 @@ async function main() {
     await fs.writeJson(argv.outputSoss, vocabCrate.toJSON(), { spaces: 2 });
   }
 
-  // If we have an output path make a profile
-  if (argv.outputProfile) {
-   profileGenerator = new ProfileGenerator(vocabCrate, conformsToURIs, rootTypes, {defaultText: (argv.rootDataset || argv.text), name: argv.name, description: argv.description})
+  // If we have an output path make a mode
+  if (argv.outputMode) {
+   modeGenerator = new ModeGenerator(vocabCrate, {
+       defaultText: (argv.rootDataset || argv.text),
+       name: argv.name,
+       description: argv.description,
+       mode: existingMode
+   });
    
 
-   // await fs.writeJson(argv.outputProfile, profile, { spaces: 2 });
-    var output = JSON.stringify(profileGenerator.profile, null, 2).replace(
+   // await fs.writeJson(argv.outputMode, mode, { spaces: 2 });
+    var output = JSON.stringify(modeGenerator.mode, null, 2).replace(
       /"MediaObject"/g,
       `"File"`
     ); // Yes, this is hacky but it's cleaner than doing this all over the place
 
-    await fs.writeFile(argv.outputProfile, output);
-    //console.log(JSON.stringify(profile, null, 2))
+    await fs.writeFile(argv.outputMode, output);
+    //console.log(JSON.stringify(mode, null, 2))
   }
 }
 
