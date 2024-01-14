@@ -7,10 +7,7 @@ const { SOSS } = require("./lib/soss");
 const { ModeGenerator } = require("./lib/modegen");
 
 const argv = yargs(process.argv.slice(2))
-  .scriptName("soss2profile")
-  .usage(
-    "Usage: $0  -c RO-Crate containing a Schema.org Style Schema (SoSS) -p profiles/your-mode.json example-crates"
-  )
+  .scriptName("rocsoss")
   .option("s", {
     alias: "soss-crate",
     describe: "A path to SoSS (Schema.org Style Schema) crate",
@@ -22,9 +19,9 @@ const argv = yargs(process.argv.slice(2))
       "A full path to output a SoSS (Schema.org Style Schema) crate generated from the input files",
     type: "string",
   })
-  .option("p", {
+  .option("m", {
     alias: "output-mode",
-    describe: "A path to the output file for a generated mode",
+    describe: "A path for a generated mode file",
     type: "string",
   })
   .option("e", {
@@ -34,7 +31,7 @@ const argv = yargs(process.argv.slice(2))
   })
   .option("i", {
     alias: "inputMode",
-    describe: "A path to an existing mode ${filename}.json",
+    describe: "A path to an existing Mode File ${filename}.json",
     type: "string",
   })
   .option("n", {

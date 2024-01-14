@@ -1,8 +1,9 @@
 # ro-crate-schema-tools
 
 
-This repository contains node-based tools for Research Object Crate [RO-Crate](https://www.researchobject.org/ro-crate/) to be used for creating and distributing Schema.org style ontologies. (SOSSs)
+This repository contains node-based tools for Research Object Crate [RO-Crate](https://www.researchobject.org/ro-crate/) to be used for creating and distributing Schema.org style ontologies (SOSSs) and Mode Files for configuring the [Crate-O editor](https://github.com/Language-Research-Technology/crate-o).
 
+# BREAKING NEWS -- We are changing the term "Profile" in the context of Crate-O to the term "Mode File" -- changes will be made in early 2024 in all the repositories but there may be some inconsistencies for a while
 
 
 ## Background: What's a Schema.org Style Schema?
@@ -44,9 +45,9 @@ Note that while there is a `schema:Class` Class, but we follow Schema.org practi
 These tools:
 
 -  Create SOSS schemas from example RO-Crates
--  Create (and soon to incrementally update) RO-Crate Editor profiles that can be used to drive editors such as Crate-O.
+-  Create (and soon to incrementally update) RO-Crate Editor ~~profiles~~ Mode Files that can be used to drive editors such as Crate-O.
 -  Produce static markdown and html documentation for SOSSs, you can put this on the web and use it to provide resolution to human-readable definitions of your linked data terms
--  
+ 
 
 
 
@@ -77,11 +78,11 @@ Options:
 
 The Makefile contains some examples.
 
-To make a generic RO-Crate Editor Profile:
+To make a generic RO-Crate Editor ~~Profile~~ Mode File:
 
 ```make generic```
 
-To make a base profile that includes ALL of schema.org plus the RO-Crate add-ins:
+To make a base ~~profile~~ Mode File that includes ALL of schema.org plus the RO-Crate add-ins:
 
 ```make base```
 
