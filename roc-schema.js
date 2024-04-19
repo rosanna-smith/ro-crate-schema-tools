@@ -12,7 +12,7 @@ var crateDir;
 program
   .version("0.1.0")
   .description(
-    "Extracts a markdown or HTML page from an RO-Crate containing Schema.org style Classes and Properties."
+    "Extracts a markdown or HTML page from an RO Crate containing Schema.org style Classes and Properties "
   )
   .arguments("<d>")
   .option("--html", "Output HTML (default is markdown)")
