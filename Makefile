@@ -11,9 +11,8 @@ cooee:
 	node rocsoss.js test_data/ldac_examples/cooee/ro-crate-metadata.json -m "test-ldac-cooee-mode.json" -n "testldac cooee" -d "testing a mode file made with cooee" -s test_data/ldac-soss/ro-crate-metadata.json -o test-ldac-soss.json
 
 #this doesnt work in make!!
-with_mode:
-    wget https://raw.githubusercontent.com/Language-Research-Technology/ro-crate-editor-mrofiles/15-multiple_roots/modes/language-data-commons.json
-	node rocsoss.js test_data/ldac_examples/cooee/ro-crate-metadata.json -m "test-ldac-cooee-mode.json" -n "testldac cooee" -d "testing a mode file made with cooee" -s test_data/ldac-soss/ro-crate-metadata.json -o test-ldac-soss.json -e language-data-commons.json
-
 ldac:
-	node rocsoss.js  -m "test-ldac-cooee-mode.json" -n "testldac cooee" -d "testing a mode file made with cooee" -s test_data/ldac-soss/ro-crate-metadata.json  -o test-ldac-soss.json
+	curl https://raw.githubusercontent.com/Language-Research-Technology/ro-crate-editor-profiles/15-multiple_roots/modes/language-data-commons.json > language-data-commons.json
+	node rocsoss.js test_data/ldac_examples/cooee/ro-crate-metadata.json -m "test-ldac-complete-mode.json" -n "testldac cooee" -d "testing a mode file made with cooee" -s test_data/ldac-soss/ro-crate-metadata.json -o test-ldac-soss.json -e language-data-commons.json
+
+	
