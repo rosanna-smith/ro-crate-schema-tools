@@ -133,7 +133,7 @@ async function main() {
       );
       
       md += `<div id="${item["rdfs:label"]}"  style="border-style: solid">\n\n`;
-      md += `## Property: ${item["rdfs:label"]} (http://w3id.org/ldac/terms#${item["rdfs:label"]})\n\n`;
+      md += `## Property: ${item["rdfs:label"]} (${item["@id"]})\n\n`;
       md += `${item["rdfs:comment"]}\n\n`;
       md += `### Values expected to be one of these types: \n\n`;
       md += `${formatValue(item.rangeIncludes)}\n\n`;
@@ -168,7 +168,7 @@ async function main() {
       );
 
       md += `<div id="${item["rdfs:label"]}" style="border-style: solid">\n\n`;
-      md += `## Class: ${item["rdfs:label"]} (http://w3id.org/ldac/terms#${item["rdfs:label"]})\n\n`;
+      md += `## Class: ${item["rdfs:label"]} (${item["@id"]})\n\n`;
       md += `${item["rdfs:comment"]}\n\n`;
       md += `### Subclass of: \n\n  ${formatValue(item["rdfs:subClassOf"])}\n\n`;
 
@@ -197,7 +197,7 @@ async function main() {
       termIndex.push(`<a href="#${item.name}">${item.name}</a>`);
 
       md += `<div id="${item["name"]}"  style="border-style: solid">\n\n`;
-      md += `## Defined Term: ${item["name"]} (http://w3id.org/ldac/terms#${item["name"]})\n\n`;
+      md += `## Defined Term: ${item["name"]} (${item["@id"]})\n\n`;
       md += `${item["description"]}\n\n`;
       if (item["@reverse"] && item["@reverse"]["hasDefinedTerm"]) {
         for (let set of crate.utils.asArray(
@@ -225,7 +225,7 @@ async function main() {
       setIndex.push(`<a href="#${item.name}">${item.name}</a>`);
 
       md += `<div id="${item["name"]}"  style="border-style: solid">\n\n`;
-      md += `## Defined Term Set: ${item["name"]} (http://w3id.org/ldac/terms#${item["name"]})\n\n`;
+      md += `## Defined Term Set: ${item["name"]} (${item["@id"]})\n\n`;
       md += `${item["description"]}\n\n`;
       md += `### Has defined terms:\n\n`
       md += formatValue(item.hasDefinedTerm);
